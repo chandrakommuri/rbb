@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Student Regidtration Form</title>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#rollno").click(function(){
+				var rollno = $(this).val();
+				$.post( "validate.php", {rollno:rollno}, function( response ) {
+					$("#name").val(response.name);
+				});
+			});
+		});
+	</script>
+	<style>
+		table.form {
+			width: 1000px;
+			margin: 50px auto;
+		}
+		table.form th {
+			text-align: right;
+		}
+	</style>
+</head>
+<body>
+	<form name="registration" method="post" action="register.php">
+		<table class="form">
+			<tr>
+				<th>Roll No: </th>
+				<td>
+					<input type="number" id="rollno" name="rollno" />
+				</td>
+			</tr>
+			<tr>
+				<th>Name: </th>
+				<td>
+					<input type="text" id="name" name="name" readonly />
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
