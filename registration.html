@@ -9,15 +9,12 @@
 				var rollno = $(this).val();
 				$.get( "validate.php", {rollno:rollno}, function( response ) {
 						$("#rollno").removeClass("error");
-						$("#rollno").parent().next().remove();
+						$("#rollno").closest("tr").next("tr").find("td.error:first").html("");
 						if(!response.error) {
 							$("#sname").val(response.name);
 						} else {
 							$("#rollno").addClass("error");
-							var $td = $("<td />");
-							$td.addClass("error");
-							$td.append("Invalid Roll No");
-							$("#rollno").parent().parent().append($td);
+							$("#rollno").closest("tr").next("tr").find("td.error:first").html(" * Invalid Roll No");
 						}
 					},
 				"json");
@@ -52,12 +49,16 @@
 </head>
 <body>
 	<form name="registration" method="post" action="register.php">
-		<table class="form">
+		<table class="form" cellspacing="5">
 			<tr>
 				<th>Roll No: </th>
 				<td class="text">
 					<input type="number" id="rollno" class="text" name="rollno" />
 				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td class="error"></td>
 			</tr>
 			<tr>
 				<th>Name: </th>
