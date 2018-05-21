@@ -5,16 +5,39 @@
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$.get( "department.php",  function( departments ) {
+					$("#dept").children("option:not(:first)").remove();
+					$.each(departments, function(index, department) {
+						$("#dept").append($("<option />").attr("value", department.id).text(department.name));
+					});
+				},
+			"json");
+				
+			$("#dept").change(function(){
+				var dept_id = $(this).val();
+				$.get( "subject.php", {dept_id:dept_id},  function( subjects ) {
+					$("#sub").children("option:not(:first)").remove();
+					$.each(subjects, function(index, subject) {
+						$("#sub").append($("<option />").attr("value", subject.id).text(subject.name));
+					});
+				},
+			"json");
+			});
+				
 			$("#rollno").on("input", function(){
 				var rollno = $(this).val();
 				$.get( "validate.php", {rollno:rollno}, function( response ) {
 						$("#rollno").removeClass("error");
-						$("#rollno").closest("tr").next("tr").find("td.error:first").html("");
+						var $tr = $("#rollno").closest("tr").next("tr");
+						$tr.hide();
+						$tr.find("td.error:first").html("");
 						if(!response.error) {
 							$("#sname").val(response.name);
 						} else {
 							$("#rollno").addClass("error");
-							$("#rollno").closest("tr").next("tr").find("td.error:first").html(" * Invalid Roll No");
+							$("#rollno").closest("tr").next("tr");
+							$tr.show();
+							$tr.find("td.error:first").html(" * Invalid Roll No");
 						}
 					},
 				"json");
@@ -29,6 +52,9 @@
 			text-align: right;
 			width: 100px;
 		}
+		table.form tr.error {
+			display: none;
+		}
 		table.form td.text {
 			width: 200px;
 		}
@@ -36,7 +62,7 @@
 			color: #ff0000;
 			width: 300px;
 		}
-		input.text {
+		input.text, select.text {
 			border: 1px solid #000;
 			padding: 5px;
 			width: 200px;
@@ -56,7 +82,7 @@
 					<input type="number" id="rollno" class="text" name="rollno" />
 				</td>
 			</tr>
-			<tr>
+			<tr class="error">
 				<td></td>
 				<td class="error"></td>
 			</tr>
@@ -64,6 +90,22 @@
 				<th>Name: </th>
 				<td class="text">
 					<input type="text" id="sname" class="text" name="sname" readonly />
+				</td>
+			</tr>
+			<tr>
+				<th>Department: </th>
+				<td class="text">
+					<select id="dept" class="text" name="dept">
+						<option value="-1">--Select--</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Subject: </th>
+				<td class="text">
+					<select id="sub" class="text" name="sub">
+						<option value="-1">--Select--</option>
+					</select>
 				</td>
 			</tr>
 		</table>
