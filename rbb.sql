@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2018 at 12:37 PM
+-- Generation Time: May 21, 2018 at 01:34 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -21,6 +21,28 @@ SET time_zone = "+00:00";
 --
 -- Database: `rbb`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `department`
+--
+
+CREATE TABLE `department` (
+  `id` int(10) NOT NULL,
+  `name` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`id`, `name`) VALUES
+(1, 'Languages'),
+(2, 'Mathematics'),
+(3, 'Physics'),
+(4, 'Computers'),
+(5, 'Electronics');
 
 -- --------------------------------------------------------
 
@@ -61,15 +83,66 @@ INSERT INTO `student` (`rollno`, `sname`) VALUES
 (51454, 'Yesdhani'),
 (51455, 'Krishna Rao');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subject`
+--
+
+CREATE TABLE `subject` (
+  `id` int(10) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `dept_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `subject`
+--
+
+INSERT INTO `subject` (`id`, `name`, `dept_id`) VALUES
+(1, 'Telugu', 1),
+(2, 'English', 1),
+(3, 'Hindi', 1),
+(4, 'M1', 2),
+(5, 'M2', 2),
+(6, 'C', 4),
+(7, 'C++', 4),
+(8, 'Circuit Theory', 5),
+(9, 'Microprocessors', 5),
+(10, 'Thermo Dynamics', 3);
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `department`
+--
+ALTER TABLE `department`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `student`
 --
 ALTER TABLE `student`
   ADD PRIMARY KEY (`rollno`);
+
+--
+-- Indexes for table `subject`
+--
+ALTER TABLE `subject`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dept_id` (`dept_id`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `subject`
+--
+ALTER TABLE `subject`
+  ADD CONSTRAINT `subject_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `department` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
