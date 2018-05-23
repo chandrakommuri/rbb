@@ -26,13 +26,13 @@
 				
 			$("#rollno").on("input", function(){
 				var rollno = $(this).val();
-				$.get( "validate.php", {rollno:rollno}, function( response ) {
+				$.get( "student.php", {rollno:rollno}, function( student ) {
 						$("#rollno").removeClass("error");
 						var $tr = $("#rollno").closest("tr").next("tr");
 						$tr.hide();
 						$tr.find("td.error:first").html("");
-						if(!response.error) {
-							$("#sname").val(response.name);
+						if(student) {
+							$("#sname").val(student.sname);
 						} else {
 							$("#rollno").addClass("error");
 							$("#rollno").closest("tr").next("tr");
