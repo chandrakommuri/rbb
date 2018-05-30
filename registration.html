@@ -2,45 +2,64 @@
 <html lang="en">
 <head>
 	<title>Student Regidtration Form</title>
+	<link rel="stylesheet" href="./css/jquery-ui.min.css">
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/jquery-ui.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			$.get( "department.php",  function( departments ) {
-					$("#dept").children("option:not(:first)").remove();
-					$.each(departments, function(index, department) {
-						$("#dept").append($("<option />").attr("value", department.id).text(department.name));
-					});
-				},
-			"json");
+			$.getJSON( "department.php",  function( departments ) {
+				$("#dept").children("option:not(:first)").remove();
+				$.each(departments, function(index, department) {
+					$("#dept").append($("<option />").attr("value", department.id).text(department.name));
+				});
+			});
 				
 			$("#dept").change(function(){
 				var dept_id = $(this).val();
-				$.get( "subject.php", {dept_id:dept_id},  function( subjects ) {
+				$.getJSON( "subject.php", {dept_id:dept_id},  function( subjects ) {
 					$("#sub").children("option:not(:first)").remove();
 					$.each(subjects, function(index, subject) {
 						$("#sub").append($("<option />").attr("value", subject.id).text(subject.name));
 					});
-				},
-			"json");
+				});
 			});
 				
 			$("#rollno").on("input", function(){
 				var rollno = $(this).val();
-				$.get( "student.php", {rollno:rollno}, function( student ) {
-						$("#rollno").removeClass("error");
-						var $tr = $("#rollno").closest("tr").next("tr");
-						$tr.hide();
-						$tr.find("td.error:first").html("");
-						if(student) {
-							$("#sname").val(student.sname);
-						} else {
-							$("#rollno").addClass("error");
-							$("#rollno").closest("tr").next("tr");
-							$tr.show();
-							$tr.find("td.error:first").html(" * Invalid Roll No");
-						}
-					},
-				"json");
+				$.getJSON( "student.php", {rollno:rollno}, function( student ) {
+					$("#rollno").removeClass("error");
+					var $tr = $("#rollno").closest("tr").next("tr");
+					$tr.hide();
+					$tr.find("td.error:first").html("");
+					if(student) {
+						$("#sname").val(student.sname);
+					} else {
+						$("#rollno").addClass("error");
+						$("#rollno").closest("tr").next("tr");
+						$tr.show();
+						$tr.find("td.error:first").html(" * Invalid Roll No");
+					}
+				});
+			});
+			
+			var cache = {};
+			$('#sname').autocomplete({
+				minLength: 2,
+				select: function( event, ui ) {
+					$('#rollno').val(ui.item.rollno);
+				},
+				source: function( request, response ) {
+				var term = request.term;
+				if ( term in cache ) {
+				response( cache[ term ] );
+				return;
+				}
+
+				$.getJSON( "students.php", request, function( data, status, xhr ) {
+					cache[ term ] = data;
+					response( data );
+				});
+				}
 			});
 		});
 	</script>
@@ -70,7 +89,11 @@
 		input.error {
 			border: 1px solid #ff0000;
 		}
-		
+		.ui-autocomplete {
+			max-height: 100px;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}		
 	</style>
 </head>
 <body>
@@ -89,7 +112,7 @@
 			<tr>
 				<th>Name: </th>
 				<td class="text">
-					<input type="text" id="sname" class="text" name="sname" readonly />
+					<input type="text" id="sname" class="text" name="sname" />
 				</td>
 			</tr>
 			<tr>
